@@ -1,0 +1,258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\apps\autopick.cpp" />
+    <ClCompile Include="src\apps\autopick_mpi.cpp" />
+    <ClCompile Include="src\apps\display.cpp" />
+    <ClCompile Include="src\apps\find_tiltpairs.cpp" />
+    <ClCompile Include="src\apps\image_handler.cpp" />
+    <ClCompile Include="src\apps\maingui.cpp" />
+    <ClCompile Include="src\apps\manualpick.cpp" />
+    <ClCompile Include="src\apps\mask_create.cpp" />
+    <ClCompile Include="src\apps\particle_polish.cpp" />
+    <ClCompile Include="src\apps\particle_polish_mpi.cpp" />
+    <ClCompile Include="src\apps\particle_sort.cpp" />
+    <ClCompile Include="src\apps\particle_sort_mpi.cpp" />
+    <ClCompile Include="src\apps\postprocess.cpp" />
+    <ClCompile Include="src\apps\preprocess.cpp" />
+    <ClCompile Include="src\apps\preprocess_mpi.cpp" />
+    <ClCompile Include="src\apps\project.cpp" />
+    <ClCompile Include="src\apps\reconstruct.cpp" />
+    <ClCompile Include="src\apps\refine.cpp" />
+    <ClCompile Include="src\apps\refine_mpi.cpp" />
+    <ClCompile Include="src\apps\run_ctffind.cpp" />
+    <ClCompile Include="src\apps\run_ctffind_mpi.cpp" />
+    <ClCompile Include="src\apps\stack_create.cpp" />
+    <ClCompile Include="src\apps\star_compare.cpp" />
+    <ClCompile Include="src\apps\tiltpair_plot.cpp" />
+    <ClCompile Include="src\args.cpp" />
+    <ClCompile Include="src\assembly.cpp" />
+    <ClCompile Include="src\autopicker.cpp" />
+    <ClCompile Include="src\autopicker_mpi.cpp" />
+    <ClCompile Include="src\backprojector.cpp" />
+    <ClCompile Include="src\complex.cpp" />
+    <ClCompile Include="src\ctf.cpp" />
+    <ClCompile Include="src\ctffind_runner.cpp" />
+    <ClCompile Include="src\ctffind_runner_mpi.cpp" />
+    <ClCompile Include="src\displayer.cpp" />
+    <ClCompile Include="src\error.cpp" />
+    <ClCompile Include="src\euler.cpp" />
+    <ClCompile Include="src\exp_model.cpp" />
+    <ClCompile Include="src\fftw.cpp" />
+    <ClCompile Include="src\filename.cpp" />
+    <ClCompile Include="src\funcs.cpp" />
+    <ClCompile Include="src\gui_entries.cpp" />
+    <ClCompile Include="src\gui_jobwindow.cpp" />
+    <ClCompile Include="src\gui_mainwindow.cpp" />
+    <ClCompile Include="src\healpix_sampling.cpp" />
+    <ClCompile Include="src\image.cpp" />
+    <ClCompile Include="src\manualpicker.cpp" />
+    <ClCompile Include="src\mask.cpp" />
+    <ClCompile Include="src\matrix1d.cpp" />
+    <ClCompile Include="src\matrix2d.cpp" />
+    <ClCompile Include="src\memory.cpp" />
+    <ClCompile Include="src\metadata_container.cpp" />
+    <ClCompile Include="src\metadata_label.cpp" />
+    <ClCompile Include="src\metadata_table.cpp" />
+    <ClCompile Include="src\ml_model.cpp" />
+    <ClCompile Include="src\ml_optimiser.cpp" />
+    <ClCompile Include="src\ml_optimiser_mpi.cpp" />
+    <ClCompile Include="src\mpi.cpp" />
+    <ClCompile Include="src\multidim_array.cpp" />
+    <ClCompile Include="src\numerical_recipes.cpp" />
+    <ClCompile Include="src\parallel.cpp" />
+    <ClCompile Include="src\particle_polisher.cpp" />
+    <ClCompile Include="src\particle_polisher_mpi.cpp" />
+    <ClCompile Include="src\particle_sorter.cpp" />
+    <ClCompile Include="src\particle_sorter_mpi.cpp" />
+    <ClCompile Include="src\postprocessing.cpp" />
+    <ClCompile Include="src\preprocessing.cpp" />
+    <ClCompile Include="src\preprocessing_mpi.cpp" />
+    <ClCompile Include="src\projector.cpp" />
+    <ClCompile Include="src\strings.cpp" />
+    <ClCompile Include="src\symmetries.cpp" />
+    <ClCompile Include="src\tabfuncs.cpp" />
+    <ClCompile Include="src\time.cpp" />
+    <ClCompile Include="src\transformations.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\args.h" />
+    <ClInclude Include="src\assembly.h" />
+    <ClInclude Include="src\autopicker.h" />
+    <ClInclude Include="src\autopicker_mpi.h" />
+    <ClInclude Include="src\backprojector.h" />
+    <ClInclude Include="src\complex.h" />
+    <ClInclude Include="src\ctf.h" />
+    <ClInclude Include="src\ctffind_runner.h" />
+    <ClInclude Include="src\ctffind_runner_mpi.h" />
+    <ClInclude Include="src\displayer.h" />
+    <ClInclude Include="src\error.h" />
+    <ClInclude Include="src\euler.h" />
+    <ClInclude Include="src\exp_model.h" />
+    <ClInclude Include="src\fftw.h" />
+    <ClInclude Include="src\filename.h" />
+    <ClInclude Include="src\funcs.h" />
+    <ClInclude Include="src\gcc_version.h" />
+    <ClInclude Include="src\gui_entries.h" />
+    <ClInclude Include="src\gui_jobwindow.h" />
+    <ClInclude Include="src\gui_mainwindow.h" />
+    <ClInclude Include="src\healpix_sampling.h" />
+    <ClInclude Include="src\image.h" />
+    <ClInclude Include="src\macros.h" />
+    <ClInclude Include="src\manualpicker.h" />
+    <ClInclude Include="src\mask.h" />
+    <ClInclude Include="src\matrix1d.h" />
+    <ClInclude Include="src\matrix2d.h" />
+    <ClInclude Include="src\memory.h" />
+    <ClInclude Include="src\metadata_container.h" />
+    <ClInclude Include="src\metadata_label.h" />
+    <ClInclude Include="src\metadata_table.h" />
+    <ClInclude Include="src\ml_model.h" />
+    <ClInclude Include="src\ml_optimiser.h" />
+    <ClInclude Include="src\ml_optimiser_mpi.h" />
+    <ClInclude Include="src\mpi.h" />
+    <ClInclude Include="src\multidim_array.h" />
+    <ClInclude Include="src\avx_helper.h" />
+    <ClInclude Include="src\numerical_recipes.h" />
+    <ClInclude Include="src\parallel.h" />
+    <ClInclude Include="src\particle_polisher.h" />
+    <ClInclude Include="src\particle_polisher_mpi.h" />
+    <ClInclude Include="src\particle_sorter.h" />
+    <ClInclude Include="src\particle_sorter_mpi.h" />
+    <ClInclude Include="src\postprocessing.h" />
+    <ClInclude Include="src\preprocessing.h" />
+    <ClInclude Include="src\preprocessing_mpi.h" />
+    <ClInclude Include="src\projector.h" />
+    <ClInclude Include="src\rwIMAGIC.h" />
+    <ClInclude Include="src\rwMRC.h" />
+    <ClInclude Include="src\rwSPIDER.h" />
+    <ClInclude Include="src\strings.h" />
+    <ClInclude Include="src\symmetries.h" />
+    <ClInclude Include="src\tabfuncs.h" />
+    <ClInclude Include="src\time.h" />
+    <ClInclude Include="src\transformations.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2D648530-232E-421B-A10A-082C0F95583A}</ProjectGuid>
+    <RootNamespace>vlion</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>vlion</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>$(SolutionDir);$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
