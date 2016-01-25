@@ -693,7 +693,9 @@ public:
         }
         else
         {
-            data = (T*)aligned_alloc(32, NEXT_MULT_OF_8(nzyxdim) * sizeof(T));
+            int result = posix_memalign((void**)&data, 32, NEXT_MULT_OF_8(nzyxdim) * sizeof(T));
+            if (result != 0)
+                REPORT_ERROR("Could not allocate memory");
             memset(data + NEXT_MULT_OF_8(nzyxdim) - 7, 0, 7 * sizeof(T));
             if (data == NULL)
                 REPORT_ERROR( "Allocate: No space left");
@@ -735,7 +737,9 @@ public:
         }
         else
         {
-            data = (T*)aligned_alloc(32, NEXT_MULT_OF_8(nzyxdim) * sizeof(T));
+            int result = posix_memalign((void**)&data, 32, NEXT_MULT_OF_8(nzyxdim) * sizeof(T));
+            if (result != 0)
+                REPORT_ERROR("Could not allocate memory");
             memset(data + NEXT_MULT_OF_8(nzyxdim) - 7, 0, 7 * sizeof(T));
             if (data == NULL)
                 REPORT_ERROR( "Allocate: No space left");
@@ -933,7 +937,9 @@ public:
             }
             else
             {
-                new_data = (T*)aligned_alloc(32, NEXT_MULT_OF_8(NZYXdim) * sizeof(T));
+                int result = posix_memalign((void**)&new_data, 32, NEXT_MULT_OF_8(NZYXdim) * sizeof(T));
+                if (result != 0)
+                    REPORT_ERROR("Could not allocate memory");
                 memset(new_data + NEXT_MULT_OF_8(NZYXdim) - 7, 0, 7 * sizeof(T));
             }
         }
