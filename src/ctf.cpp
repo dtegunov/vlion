@@ -83,10 +83,14 @@ void CTF::read(MetaDataTable &MD1, MetaDataTable &MD2, long int objectID)
 		if (!MD2.getValue(EMDL_CTF_Q0, Q0, objectID))
 			Q0=0;
 
+    if (!MD1.getValue(EMDL_CTF_PHASESHIFT, PhaseShift, objectID))
+        if (!MD2.getValue(EMDL_CTF_PHASESHIFT, PhaseShift, objectID))
+            PhaseShift = 0;
+
 	initialise();
 }
 void CTF::setValues(DOUBLE _defU, DOUBLE _defV, DOUBLE _defAng, DOUBLE _voltage,
-		DOUBLE _Cs, DOUBLE _Q0, DOUBLE _Bfac, DOUBLE _scale)
+		DOUBLE _Cs, DOUBLE _Q0, DOUBLE _Bfac, DOUBLE _PhaseShift, DOUBLE _scale)
 {
 	kV              = _voltage;
 	DeltafU         = _defU;
@@ -96,6 +100,7 @@ void CTF::setValues(DOUBLE _defU, DOUBLE _defV, DOUBLE _defAng, DOUBLE _voltage,
 	Bfac            = _Bfac;
 	scale           = _scale;
 	Q0              = _Q0;
+    PhaseShift      = _PhaseShift;
 
 	initialise();
 }
@@ -120,6 +125,7 @@ void CTF::write(std::ostream &out)
     MD.setValue(EMDL_CTF_BFACTOR, Bfac);
     MD.setValue(EMDL_CTF_SCALEFACTOR, scale);
     MD.setValue(EMDL_CTF_Q0, Q0);
+    MD.setValue(EMDL_CTF_PHASESHIFT, PhaseShift);
     MD.write(out);
 }
 
@@ -145,6 +151,8 @@ void CTF::initialise()
     // Average focus and deviation
     defocus_average   = -(DeltafU + DeltafV) * 0.5;
     defocus_deviation = -(DeltafU - DeltafV) * 0.5;
+
+    rad_phaseshift = DEG2RAD(PhaseShift);
 
     // lambda=h/sqrt(2*m*e*kV)
     //    h: Planck constant

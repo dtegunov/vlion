@@ -364,6 +364,7 @@ void MlOptimiser::parseInitial(int argc, char **argv)
 	refs_are_ctf_corrected = parser.checkOption("--ctf_corrected_ref", "Have the input references been CTF-amplitude corrected?");
 	ctf_phase_flipped = parser.checkOption("--ctf_phase_flipped", "Have the data been CTF phase-flipped?");
 	only_flip_phases = parser.checkOption("--only_flip_phases", "Only perform CTF phase-flipping? (default is full amplitude-correction)");
+    use_custom_ctf = parser.checkOption("--use_custom_ctf", "Use custom CTF for 2D particles? (default is no)");
 	do_norm_correction = parser.checkOption("--norm", "Perform normalisation-error correction?");
 	do_scale_correction = parser.checkOption("--scale", "Perform intensity-scale corrections on image groups?");
 
@@ -519,6 +520,7 @@ void MlOptimiser::read(FileName fn_in, int rank)
 		!MD.getValue(EMDL_OPTIMISER_IGNORE_CTF_UNTIL_FIRST_PEAK, intact_ctf_first_peak) ||
 		!MD.getValue(EMDL_OPTIMISER_DATA_ARE_CTF_PHASE_FLIPPED, ctf_phase_flipped) ||
 		!MD.getValue(EMDL_OPTIMISER_DO_ONLY_FLIP_CTF_PHASES, only_flip_phases) ||
+        !MD.getValue(EMDL_OPTIMISER_USE_CUSTOM_CTF, use_custom_ctf) ||
 		!MD.getValue(EMDL_OPTIMISER_REFS_ARE_CTF_CORRECTED, refs_are_ctf_corrected) ||
 		!MD.getValue(EMDL_OPTIMISER_FIX_SIGMA_NOISE, fix_sigma_noise) ||
 		!MD.getValue(EMDL_OPTIMISER_FIX_SIGMA_OFFSET, fix_sigma_offset) ||
@@ -663,6 +665,7 @@ void MlOptimiser::write(bool do_write_sampling, bool do_write_data, bool do_writ
 		MD.setValue(EMDL_OPTIMISER_IGNORE_CTF_UNTIL_FIRST_PEAK, intact_ctf_first_peak);
 		MD.setValue(EMDL_OPTIMISER_DATA_ARE_CTF_PHASE_FLIPPED, ctf_phase_flipped);
 		MD.setValue(EMDL_OPTIMISER_DO_ONLY_FLIP_CTF_PHASES, only_flip_phases);
+        MD.setValue(EMDL_OPTIMISER_USE_CUSTOM_CTF, use_custom_ctf);
 		MD.setValue(EMDL_OPTIMISER_REFS_ARE_CTF_CORRECTED, refs_are_ctf_corrected);
 		MD.setValue(EMDL_OPTIMISER_FIX_SIGMA_NOISE, fix_sigma_noise);
 		MD.setValue(EMDL_OPTIMISER_FIX_SIGMA_OFFSET, fix_sigma_offset);
@@ -2839,9 +2842,7 @@ void MlOptimiser::getFourierTransformsAndCtfs(long int my_ori_particle, int meta
 						DIRECT_A3D_ELEM(rec_img(), k, i, j) = DIRECT_A3D_ELEM(exp_imagedata, offset + k, i, j);
 					}
 					rec_img().setXmippOrigin();
-
 				}
-
 			}
 			else
 			{
@@ -3052,26 +3053,49 @@ void MlOptimiser::getFourierTransformsAndCtfs(long int my_ori_particle, int meta
 					}
 				}
 				// Set the CTF-image in Fctf
-				Ictf().setXmippOrigin();
-				FOR_ALL_ELEMENTS_IN_FFTW_TRANSFORM(Fctf)
-				{
-					// Use negative kp,ip and jp indices, because the origin in the ctf_img lies half a pixel to the right of the actual center....
-					DIRECT_A3D_ELEM(Fctf, k, i, j) = A3D_ELEM(Ictf(), -kp, -ip, -jp);
-				}
+                Ictf().setXmippOrigin();
+                FOR_ALL_ELEMENTS_IN_FFTW_TRANSFORM(Fctf)
+                {
+                    // Use negative kp,ip and jp indices, because the origin in the ctf_img lies half a pixel to the right of the actual center....
+                    DIRECT_A3D_ELEM(Fctf, k, i, j) = A3D_ELEM(Ictf(), -kp, -ip, -jp);
+                }
 			}
-			else
-			{
-				CTF ctf;
-				ctf.setValues(DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_DEFOCUS_U),
-							  DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_DEFOCUS_V),
-							  DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_DEFOCUS_ANGLE),
-							  DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_VOLTAGE),
-							  DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_CS),
-							  DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_Q0),
-							  DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_BFAC));
+            else
+            {
+                if (use_custom_ctf)
+                {
+                    Image<DOUBLE> Ictf;
+					// Read CTF-image from disc
+					FileName fn_ctf;
+					std::istringstream split(exp_fn_ctf);
+					// Get the right line in the exp_fn_img string
+					for (int i = 0; i <= istop; i++)
+						getline(split, fn_ctf);
 
-				ctf.getFftwImage(Fctf, mymodel.ori_size, mymodel.ori_size, mymodel.pixel_size,
-						ctf_phase_flipped, only_flip_phases, intact_ctf_first_peak, true);
+                    //std::cerr << "About to read " << fn_ctf << std::endl;
+
+                    Ictf.read(fn_ctf);
+                    FOR_ALL_ELEMENTS_IN_FFTW_TRANSFORM(Fctf)
+                    {
+                        DIRECT_A2D_ELEM(Fctf, i, j) = FFTW2D_ELEM(Ictf(), ip, jp);
+                    }
+                }
+                else
+                {
+                    CTF ctf;
+                    ctf.setValues(DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_DEFOCUS_U),
+                                    DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_DEFOCUS_V),
+                                    DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_DEFOCUS_ANGLE),
+                                    DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_VOLTAGE),
+                                    DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_CS),
+                                    DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_Q0),
+                                    DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_BFAC),
+                                    DIRECT_A2D_ELEM(exp_metadata, metadata_offset + ipart, METADATA_CTF_PHASESHIFT),
+                                    1.0);
+
+                    ctf.getFftwImage(Fctf, mymodel.ori_size, mymodel.ori_size, mymodel.pixel_size,
+                                     ctf_phase_flipped, only_flip_phases, intact_ctf_first_peak, true);
+                }
 			}
 //#define DEBUG_CTF_FFTW_IMAGE
 #ifdef DEBUG_CTF_FFTW_IMAGE
@@ -5252,17 +5276,42 @@ void MlOptimiser::calculateExpectedAngularErrors(long int my_first_ori_particle,
 					}
 					else
 					{
-						CTF ctf;
-						ctf.setValues(DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_DEFOCUS_U),
-									  DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_DEFOCUS_V),
-									  DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_DEFOCUS_ANGLE),
-									  DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_VOLTAGE),
-									  DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_CS),
-									  DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_Q0),
-									  DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_BFAC));
+                        if (use_custom_ctf)
+                        {
+                            Image<DOUBLE> Ictf;
+						    // Read CTF-image from disc
+						    FileName fn_ctf;
+						    std::istringstream split(exp_fn_ctf);
+						    // Get the right line in the exp_fn_img string
+						    for (int i = 0; i <= my_metadata_entry; i++)
+							    getline(split, fn_ctf);
 
-						Fctf.resize(exp_current_image_size, exp_current_image_size/ 2 + 1);
-						ctf.getFftwImage(Fctf, mymodel.ori_size, mymodel.ori_size, mymodel.pixel_size, ctf_phase_flipped, only_flip_phases, intact_ctf_first_peak, true);
+                            //std::cerr << "Angular estimation, about to read " << fn_ctf << std::endl;
+
+                            Ictf.read(fn_ctf);
+
+						    Fctf.resize(exp_current_image_size, exp_current_image_size/ 2 + 1);
+                            FOR_ALL_ELEMENTS_IN_FFTW_TRANSFORM(Fctf)
+                            {
+                                DIRECT_A2D_ELEM(Fctf, i, j) = FFTW2D_ELEM(Ictf(), ip, jp);
+                            }
+                        }
+                        else
+                        {
+						    CTF ctf;
+						    ctf.setValues(DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_DEFOCUS_U),
+									      DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_DEFOCUS_V),
+									      DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_DEFOCUS_ANGLE),
+									      DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_VOLTAGE),
+									      DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_CS),
+									      DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_Q0),
+									      DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_BFAC),
+                                          DIRECT_A2D_ELEM(exp_metadata, my_metadata_entry, METADATA_CTF_PHASESHIFT),
+                                          1.0);
+
+						    Fctf.resize(exp_current_image_size, exp_current_image_size/ 2 + 1);
+						    ctf.getFftwImage(Fctf, mymodel.ori_size, mymodel.ori_size, mymodel.pixel_size, ctf_phase_flipped, only_flip_phases, intact_ctf_first_peak, true);
+                        }
 					}
 				}
 
@@ -5900,7 +5949,7 @@ void MlOptimiser::getMetaAndImageDataSubset(int first_ori_particle_id, int last_
 			// Get the image names from the MDimg table
 			FileName fn_img="", fn_rec_img="", fn_ctf="";
 			mydata.MDimg.getValue(EMDL_IMAGE_NAME, fn_img, part_id);
-			if (mymodel.data_dim == 3 && do_ctf_correction)
+			if ((mymodel.data_dim == 3 || use_custom_ctf) && do_ctf_correction)
 			{
 				// Also read the CTF image from disc
 				if (!mydata.MDimg.getValue(EMDL_CTF_IMAGE, fn_ctf, part_id))
@@ -6006,7 +6055,7 @@ void MlOptimiser::getMetaAndImageDataSubset(int first_ori_particle_id, int last_
 			if (do_ctf_correction)
 			{
 				long int mic_id = mydata.getMicrographId(part_id);
-				DOUBLE kV, DeltafU, DeltafV, azimuthal_angle, Cs, Bfac, Q0;
+				DOUBLE kV, DeltafU, DeltafV, azimuthal_angle, Cs, Bfac, Q0, PhaseShift;
 				if (!mydata.MDimg.getValue(EMDL_CTF_VOLTAGE, kV, part_id))
 					if (!mydata.MDmic.getValue(EMDL_CTF_VOLTAGE, kV, mic_id))
 						kV=200;
@@ -6035,6 +6084,10 @@ void MlOptimiser::getMetaAndImageDataSubset(int first_ori_particle_id, int last_
 					if (!mydata.MDmic.getValue(EMDL_CTF_Q0, Q0, mic_id))
 						Q0=0;
 
+                if (!mydata.MDimg.getValue(EMDL_CTF_PHASESHIFT, PhaseShift, part_id))
+                    if (!mydata.MDmic.getValue(EMDL_CTF_PHASESHIFT, PhaseShift, mic_id))
+                        PhaseShift = 0;
+
 				DIRECT_A2D_ELEM(exp_metadata, my_image_no, METADATA_CTF_VOLTAGE) = kV;
 				DIRECT_A2D_ELEM(exp_metadata, my_image_no, METADATA_CTF_DEFOCUS_U) = DeltafU;
 				DIRECT_A2D_ELEM(exp_metadata, my_image_no, METADATA_CTF_DEFOCUS_V) = DeltafV;
@@ -6042,6 +6095,7 @@ void MlOptimiser::getMetaAndImageDataSubset(int first_ori_particle_id, int last_
 				DIRECT_A2D_ELEM(exp_metadata, my_image_no, METADATA_CTF_CS) = Cs;
 				DIRECT_A2D_ELEM(exp_metadata, my_image_no, METADATA_CTF_BFAC) = Bfac;
 				DIRECT_A2D_ELEM(exp_metadata, my_image_no, METADATA_CTF_Q0) = Q0;
+                DIRECT_A2D_ELEM(exp_metadata, my_image_no, METADATA_CTF_PHASESHIFT) = PhaseShift;
 
 			}
 

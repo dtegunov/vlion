@@ -69,6 +69,8 @@
 #define METADATA_BEAMTILT_X 24
 #define METADATA_BEAMTILT_Y 25
 
+#define METADATA_CTF_PHASESHIFT 26
+
 #define DO_WRITE_DATA true
 #define DONT_WRITE_DATA false
 #define DO_WRITE_SAMPLING true
@@ -159,6 +161,9 @@ public:
 
 	// Flag whether current references are ctf corrected
 	bool refs_are_ctf_corrected;
+
+    // Use custom CTF for 2D particles (default behavior for 3D)
+    bool use_custom_ctf;
 
 	// Flag whether directions have changed upon continuing an old run
 	bool directions_have_changed;

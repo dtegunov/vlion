@@ -108,7 +108,7 @@ public:
 };
 
 // Get micrograph metadata
-bool getCtffindResults(FileName fn_mic, DOUBLE &defU, DOUBLE &defV, DOUBLE &defAng, DOUBLE &CC,
+bool getCtffindResults(FileName fn_mic, DOUBLE &defU, DOUBLE &defV, DOUBLE &defAng, DOUBLE &CC, DOUBLE &PhaseShift,
 		DOUBLE &HT, DOUBLE &CS, DOUBLE &AmpCnst, DOUBLE &XMAG, DOUBLE &DStep, bool die_if_not_found = true);
 
 

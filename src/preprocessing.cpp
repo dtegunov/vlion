@@ -177,7 +177,7 @@ void Preprocessing::joinAllStarFiles()
 
 	std::cout << " Joining all metadata in one STAR file..." << std::endl;
 	bool has_other_ctfs, has_this_ctf;
-	DOUBLE defU, defV, defAng, CC, HT, CS, AmpCnst, XMAG, DStep;
+	DOUBLE defU, defV, defAng, CC, PhaseShift, HT, CS, AmpCnst, XMAG, DStep;
 	has_other_ctfs = false;
 	FileName prev_fn_mic="";
 	for (long int ipos = 0; ipos < fn_coords.size(); ipos++)
@@ -191,8 +191,8 @@ void Preprocessing::joinAllStarFiles()
 		{
 			FileName fn_microot = getRootNameFromMicrographName(fn_mic);
 			// Gather the results from ctffind
-			has_this_ctf = getCtffindResults(fn_microot, defU, defV, defAng, CC,
-					HT, CS, AmpCnst, XMAG, DStep);
+			has_this_ctf = getCtffindResults(fn_microot, defU, defV, defAng, CC, PhaseShift,
+					                         HT, CS, AmpCnst, XMAG, DStep);
 
 		}
 		prev_fn_mic = fn_mic;
@@ -209,6 +209,7 @@ void Preprocessing::joinAllStarFiles()
 			MDout.addLabel(EMDL_CTF_DEFOCUSU);
 			MDout.addLabel(EMDL_CTF_DEFOCUSV);
 			MDout.addLabel(EMDL_CTF_DEFOCUS_ANGLE);
+            MDout.addLabel(EMDL_CTF_PHASESHIFT);
 			MDout.addLabel(EMDL_CTF_VOLTAGE);
 			MDout.addLabel(EMDL_CTF_CS);
 			MDout.addLabel(EMDL_CTF_Q0);
@@ -237,6 +238,7 @@ void Preprocessing::joinAllStarFiles()
 				MDonestack.setValue(EMDL_CTF_DEFOCUSU, defU);
 				MDonestack.setValue(EMDL_CTF_DEFOCUSV, defV);
 				MDonestack.setValue(EMDL_CTF_DEFOCUS_ANGLE, defAng);
+                MDonestack.setValue(EMDL_CTF_PHASESHIFT, PhaseShift);
 				MDonestack.setValue(EMDL_CTF_VOLTAGE, HT);
 				MDonestack.setValue(EMDL_CTF_Q0, AmpCnst);
 				MDonestack.setValue(EMDL_CTF_CS, CS);

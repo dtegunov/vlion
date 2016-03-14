@@ -101,8 +101,8 @@ void CtffindRunner::initialise()
 		for (long int imic = 0; imic < fn_micrographs.size(); imic++)
 		{
 			FileName fn_microot = fn_micrographs[imic].without(".mrc");
-			DOUBLE defU, defV, defAng, CC, HT, CS, AmpCnst, XMAG, DStep;
-			if (!getCtffindResults(fn_microot, defU, defV, defAng, CC,
+			DOUBLE defU, defV, defAng, CC, PhaseShift, HT, CS, AmpCnst, XMAG, DStep;
+			if (!getCtffindResults(fn_microot, defU, defV, defAng, CC, PhaseShift,
 					HT, CS, AmpCnst, XMAG, DStep, false)) // false: dont die if not found Final values
 				fns_todo.push_back(fn_micrographs[imic]);
 		}
@@ -158,8 +158,8 @@ void CtffindRunner::joinCtffindResults()
 	for (long int imic = 0; imic < fn_micrographs.size(); imic++)
     {
 		FileName fn_microot = fn_micrographs[imic].without(".mrc");
-		DOUBLE defU, defV, defAng, CC, HT, CS, AmpCnst, XMAG, DStep;
-		bool has_this_ctf = getCtffindResults(fn_microot, defU, defV, defAng, CC,
+		DOUBLE defU, defV, defAng, CC, PhaseShift, HT, CS, AmpCnst, XMAG, DStep;
+		bool has_this_ctf = getCtffindResults(fn_microot, defU, defV, defAng, CC, PhaseShift,
 				HT, CS, AmpCnst, XMAG, DStep);
 
 		if (!has_this_ctf)
@@ -172,6 +172,7 @@ void CtffindRunner::joinCtffindResults()
 		MDctf.setValue(EMDL_CTF_DEFOCUSU, defU);
 	    MDctf.setValue(EMDL_CTF_DEFOCUSV, defV);
 	    MDctf.setValue(EMDL_CTF_DEFOCUS_ANGLE, defAng);
+        MDctf.setValue(EMDL_CTF_PHASESHIFT, PhaseShift);
 	    MDctf.setValue(EMDL_CTF_VOLTAGE, HT);
 	    MDctf.setValue(EMDL_CTF_CS, CS);
 	    MDctf.setValue(EMDL_CTF_Q0, AmpCnst);
@@ -245,7 +246,7 @@ void CtffindRunner::executeCtffind(FileName fn_mic)
 
 }
 
-bool getCtffindResults(FileName fn_microot, DOUBLE &defU, DOUBLE &defV, DOUBLE &defAng, DOUBLE &CC,
+bool getCtffindResults(FileName fn_microot, DOUBLE &defU, DOUBLE &defV, DOUBLE &defAng, DOUBLE &CC, DOUBLE &PhaseShift,
 		DOUBLE &HT, DOUBLE &CS, DOUBLE &AmpCnst, DOUBLE &XMAG, DOUBLE &DStep, bool die_if_not_found)
 {
 
@@ -291,6 +292,10 @@ bool getCtffindResults(FileName fn_microot, DOUBLE &defU, DOUBLE &defV, DOUBLE &
             defV = textToFloat(words[1]);
             defAng = textToFloat(words[2]);
             CC = textToFloat(words[3]);
+            if (words.size() > 6)
+                PhaseShift = textToFloat(words[4]);
+            else
+                PhaseShift = 0;
         }
     }
     if (!Cs_is_found && die_if_not_found)

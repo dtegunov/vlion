@@ -68,6 +68,9 @@ protected:
     // defocus_deviation = (defocus_u - defocus_v)/2
     DOUBLE defocus_deviation;
 
+    // Phase shift in radians
+    DOUBLE rad_phaseshift;
+
 public:
 
     /// Accelerating Voltage (in KiloVolts)
@@ -115,6 +118,9 @@ public:
     // B-factor fall-off
     DOUBLE Bfac;
 
+    // Phase shift. 0 when not using a phase plate, from 0 to pi otherwise.
+    DOUBLE PhaseShift;
+
     // Overall scale-factor of CTF
     DOUBLE scale;
 
@@ -130,7 +136,7 @@ public:
 
     /** Just set all values explicitly */
     void setValues(DOUBLE _defU, DOUBLE _defV, DOUBLE _defAng,
-    		DOUBLE _voltage, DOUBLE _Cs, DOUBLE _Q0, DOUBLE _Bfac, DOUBLE _scale = 1.);
+    		DOUBLE _voltage, DOUBLE _Cs, DOUBLE _Q0, DOUBLE _Bfac, DOUBLE _PhaseShift, DOUBLE _scale);
 
     /** Read from a single MetaDataTable */
     void read(MetaDataTable &MD);
@@ -154,7 +160,7 @@ public:
         DOUBLE u4 = u2 * u2;
         // if (u2>=ua2) return 0;
         DOUBLE deltaf = getDeltaF(X, Y);
-        DOUBLE argument = K1 * deltaf * u2 + K2 * u4;
+        DOUBLE argument = K1 * deltaf * u2 + K2 * u4 - rad_phaseshift;
         DOUBLE retval;
         if (do_intact_until_first_peak && ABS(argument) < PI/2.)
         {

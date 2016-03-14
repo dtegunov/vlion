@@ -86,6 +86,7 @@ enum EMDLabel
     EMDL_CTF_Q0, ///< Amplitude contrast
     EMDL_CTF_K, ///< CTF gain
     EMDL_CTF_VALUE, ///< CTF value
+    EMDL_CTF_PHASESHIFT, ///< Phase shift caused by a phase plate (degrees)
 
     EMDL_IMAGE_NAME,
     EMDL_IMAGE_ORI_NAME,
@@ -191,6 +192,7 @@ enum EMDLabel
     EMDL_OPTIMISER_DATA_STARFILE,
     EMDL_OPTIMISER_DO_AUTO_REFINE,
     EMDL_OPTIMISER_DO_ONLY_FLIP_CTF_PHASES,
+    EMDL_OPTIMISER_USE_CUSTOM_CTF,
     EMDL_OPTIMISER_DO_CORRECT_CTF,
     EMDL_OPTIMISER_DO_CORRECT_MAGNIFICATION,
     EMDL_OPTIMISER_DO_CORRECT_NORM,
@@ -411,6 +413,7 @@ private:
         EMDL::addLabel(EMDL_CTF_TRANSVERSAL_DISPLACEMENT, EMDL_DOUBLE, "rlnTransversalDisplacement", "Transversal displacement (in Angstroms)");
         EMDL::addLabel(EMDL_CTF_Q0, EMDL_DOUBLE, "rlnAmplitudeContrast", "Amplitude contrast (as a fraction, i.e. 10% = 0.1)");
         EMDL::addLabel(EMDL_CTF_VALUE, EMDL_DOUBLE, "rlnCtfValue", "Value of the Contrast Transfer Function");
+        EMDL::addLabel(EMDL_CTF_PHASESHIFT, EMDL_DOUBLE, "rlnPhaseShift", "Phase shift caused by a phase plate in degrees, ranges from 0 to 180");
 
     	EMDL::addLabel(EMDL_IMAGE_NAME, EMDL_STRING, "rlnImageName", "Name of an image");
     	EMDL::addLabel(EMDL_IMAGE_ORI_NAME, EMDL_STRING, "rlnImageOriginalName", "Original name of an image");
@@ -522,6 +525,7 @@ private:
         EMDL::addLabel(EMDL_OPTIMISER_DO_MAP, EMDL_BOOL, "rlnDoMapEstimation", "Flag to indicate that MAP estimation should be performed (otherwise ML estimation)");
         EMDL::addLabel(EMDL_OPTIMISER_DO_AUTO_REFINE, EMDL_BOOL, "rlnDoAutoRefine", "Flag to indicate that 3D auto-refine procedure is being used");
         EMDL::addLabel(EMDL_OPTIMISER_DO_ONLY_FLIP_CTF_PHASES, EMDL_BOOL, "rlnDoOnlyFlipCtfPhases", "Flag to indicate that CTF-correction should only comprise phase-flipping");
+        EMDL::addLabel(EMDL_OPTIMISER_USE_CUSTOM_CTF, EMDL_BOOL, "rlnUseCustomCtf", "Flag to indicate that a custom CTF image should be used even for 2D particles");
         EMDL::addLabel(EMDL_OPTIMISER_DO_SOLVENT_FLATTEN, EMDL_BOOL, "rlnDoSolventFlattening", "Flag to indicate that the references should be masked to set their solvent areas to a constant density");
         EMDL::addLabel(EMDL_OPTIMISER_DO_SKIP_ALIGN, EMDL_BOOL, "rlnDoSkipAlign", "Flag to indicate that orientational (i.e. rotational and translational) searches will be omitted from the refinement, only marginalisation over classes will take place");
         EMDL::addLabel(EMDL_OPTIMISER_DO_SKIP_ROTATE, EMDL_BOOL, "rlnDoSkipRotate", "Flag to indicate that rotational searches will be omitted from the refinement, only marginalisation over classes and translations will take place");

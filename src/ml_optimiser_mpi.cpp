@@ -402,7 +402,7 @@ void MlOptimiserMpi::expectation()
 			node->relion_MPI_Send(&my_nr_images, 1, MPI_INT, first_slave, MPITAG_JOB_REQUEST, MPI_COMM_WORLD);
 			node->relion_MPI_Send(MULTIDIM_ARRAY(exp_metadata), MULTIDIM_SIZE(exp_metadata), MY_MPI_DOUBLE, first_slave, MPITAG_METADATA, MPI_COMM_WORLD);
 			// Also send exp_fn_ctfs if necessary
-			length_fn_ctf = exp_fn_img.length() + 1; // +1 to include \0 at the end of the string
+			length_fn_ctf = exp_fn_ctf.length() + 1; // +1 to include \0 at the end of the string
 			node->relion_MPI_Send(&length_fn_ctf, 1, MPI_INT, first_slave, MPITAG_JOB_REQUEST, MPI_COMM_WORLD);
 			if (length_fn_ctf > 1)
 				node->relion_MPI_Send((void*)exp_fn_ctf.c_str(), length_fn_ctf, MPI_CHAR, first_slave, MPITAG_METADATA, MPI_COMM_WORLD);
