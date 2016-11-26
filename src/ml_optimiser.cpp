@@ -3032,7 +3032,7 @@ void MlOptimiser::getFourierTransformsAndCtfs(long int my_ori_particle, int meta
 		{
 			if (mymodel.data_dim == 3)
 			{
-				Image<DOUBLE> Ictf;
+				/*Image<DOUBLE> Ictf;
 				if (do_parallel_disc_io)
 				{
 					// Read CTF-image from disc
@@ -3058,13 +3058,30 @@ void MlOptimiser::getFourierTransformsAndCtfs(long int my_ori_particle, int meta
                 {
                     // Use negative kp,ip and jp indices, because the origin in the ctf_img lies half a pixel to the right of the actual center....
                     DIRECT_A3D_ELEM(Fctf, k, i, j) = A3D_ELEM(Ictf(), -kp, -ip, -jp);
-                }
+                }*/
+
+				Image<DOUBLE> Ictf;
+				// Read CTF-image from disc
+				FileName fn_ctf;
+				std::istringstream split(exp_fn_ctf);
+				// Get the right line in the exp_fn_img string
+				for (int i = 0; i <= istop; i++)
+					getline(split, fn_ctf);
+
+				Ictf.read(fn_ctf);
+				windowFourierTransform(Ictf(), Fctf, YSIZE(Fctf));
+
+				/*Image<DOUBLE> dctf;
+				dctf().resize(Fctf);
+				windowFourierTransform(Ictf(), dctf(), YSIZE(Fctf));
+				dctf.write("F1.mrc");
+				REPORT_ERROR("bla");*/
 			}
             else
             {
                 if (use_custom_ctf)
                 {
-                    Image<DOUBLE> Ictf;
+					Image<DOUBLE> Ictf;
 					// Read CTF-image from disc
 					FileName fn_ctf;
 					std::istringstream split(exp_fn_ctf);
@@ -3072,13 +3089,8 @@ void MlOptimiser::getFourierTransformsAndCtfs(long int my_ori_particle, int meta
 					for (int i = 0; i <= istop; i++)
 						getline(split, fn_ctf);
 
-                    //std::cerr << "About to read " << fn_ctf << std::endl;
-
-                    Ictf.read(fn_ctf);
-                    FOR_ALL_ELEMENTS_IN_FFTW_TRANSFORM(Fctf)
-                    {
-                        DIRECT_A2D_ELEM(Fctf, i, j) = FFTW2D_ELEM(Ictf(), ip, jp);
-                    }
+					Ictf.read(fn_ctf);
+					windowFourierTransform(Ictf(), Fctf, YSIZE(Fctf));
                 }
                 else
                 {
@@ -5251,12 +5263,13 @@ void MlOptimiser::calculateExpectedAngularErrors(long int my_first_ori_particle,
 
 
 				MultidimArray<DOUBLE> Fctf;
+				Fctf.resize(exp_current_image_size, exp_current_image_size, exp_current_image_size / 2 + 1);
 				// Get CTF for this particle
 				if (do_ctf_correction)
 				{
 					if (mymodel.data_dim == 3)
 					{
-						Image<DOUBLE> Ictf;
+						/*Image<DOUBLE> Ictf;
 						// Read CTF-image from disc
 						FileName fn_ctf;
 						std::istringstream split(exp_fn_ctf);
@@ -5272,29 +5285,40 @@ void MlOptimiser::calculateExpectedAngularErrors(long int my_first_ori_particle,
 						{
 							// Use negative kp, ip and jp indices, because the origin in the ctf_img lies half a pixel to the right of the actual center....
 							DIRECT_A3D_ELEM(Fctf, k, i, j) = A3D_ELEM(Ictf(), -kp, -ip, -jp);
-						}
+						}*/
+
+						Image<DOUBLE> Ictf;
+						// Read CTF-image from disc
+						FileName fn_ctf;
+						std::istringstream split(exp_fn_ctf);
+						// Get the right line in the exp_fn_img string
+						for (int i = 0; i <= my_metadata_entry; i++)
+							getline(split, fn_ctf);
+
+
+						Ictf.read(fn_ctf);
+						windowFourierTransform(Ictf(), Fctf, YSIZE(Fctf));
+
+						/*Image<DOUBLE> dctf;
+						dctf().resize(Fctf);
+						windowFourierTransform(Ictf(), dctf(), YSIZE(Fctf));
+						dctf.write("F1.mrc");
+						REPORT_ERROR("blubb");*/
 					}
 					else
 					{
                         if (use_custom_ctf)
                         {
-                            Image<DOUBLE> Ictf;
-						    // Read CTF-image from disc
-						    FileName fn_ctf;
-						    std::istringstream split(exp_fn_ctf);
-						    // Get the right line in the exp_fn_img string
-						    for (int i = 0; i <= my_metadata_entry; i++)
-							    getline(split, fn_ctf);
+							Image<DOUBLE> Ictf;
+							// Read CTF-image from disc
+							FileName fn_ctf;
+							std::istringstream split(exp_fn_ctf);
+							// Get the right line in the exp_fn_img string
+							for (int i = 0; i <= my_metadata_entry; i++)
+								getline(split, fn_ctf);
 
-                            //std::cerr << "Angular estimation, about to read " << fn_ctf << std::endl;
-
-                            Ictf.read(fn_ctf);
-
-						    Fctf.resize(exp_current_image_size, exp_current_image_size/ 2 + 1);
-                            FOR_ALL_ELEMENTS_IN_FFTW_TRANSFORM(Fctf)
-                            {
-                                DIRECT_A2D_ELEM(Fctf, i, j) = FFTW2D_ELEM(Ictf(), ip, jp);
-                            }
+							Ictf.read(fn_ctf);
+							windowFourierTransform(Ictf(), Fctf, YSIZE(Fctf));
                         }
                         else
                         {
@@ -5548,6 +5572,13 @@ void MlOptimiser::calculateExpectedAngularErrors(long int my_first_ori_particle,
 						}
 
 					} // end while my_snr >= pvalue
+
+					//if (mymodel.data_dim == 3)
+					//{
+					//	ang_error = XMIPP_MAX(1.0, ang_error);
+					//	sh_error = XMIPP_MAX(0.5, sh_error);
+					//}
+
 					if (imode == 0)
 						acc_rot_class += ang_error;
 					else if (imode == 1)
